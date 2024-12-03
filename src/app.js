@@ -7,7 +7,7 @@ const model = new BotModel();
 const view = BotView;
 const controller = new BotController(model, view);
 
-console.log("Запуск бота");
+console.log("Запуск");
 
 //controller.run();
 controller.runDetectTest();

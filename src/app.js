@@ -8,6 +8,6 @@ const view = BotView;
 const controller = new BotController(model, view);
 
 console.log("Запуск бота");
-// Запуск бота
+
 //controller.run();
 controller.runDetectTest();

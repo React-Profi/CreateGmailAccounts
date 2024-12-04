@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Современный стандарт JavaScript
+    "module": "commonjs",
+    "moduleResolution": "node", // Резолвим модули как в Node.js
+    "strict": true, // Включаем строгую типизацию
+    "esModuleInterop": true, // Позволяет работать с CommonJS модулями
+    "skipLibCheck": true, // Пропускаем проверку типов библиотек
+    "forceConsistentCasingInFileNames": true, // Строгое соответствие имени файла
+    "allowSyntheticDefaultImports": true, // Позволяет использовать синтетические импорты
+    "types": ["node", "puppeteer"], // Подключаем типы для Node.js и Puppeteer
+    "resolveJsonModule": true, // Позволяет импортировать JSON-файлы
+    "outDir": "./dist", // Указывает выходную папку для .js файлов
+    "rootDir": "./src" // Указывает корневую папку для исходного кода
+  },
+  "include": ["src/**/*"], // Включаем исходные файлы
+  "exclude": ["node_modules", "dist"] // Исключаем папки node_modules и dist
+}

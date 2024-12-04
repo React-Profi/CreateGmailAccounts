@@ -2,12 +2,11 @@
   "name": "creategmailaccounts",
   "version": "1.0.0",
   "description": "Собственность Д. Богдана",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/app.js"
   },
-  "type": "module",
   "author": "Д.Б. Александрович",
   "license": "ISC",
   "dependencies": {
@@ -15,5 +14,12 @@
     "puppeteer-extra-plugin-anonymize-ua": "^2.4.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "puppeteer-extra-plugin-timezone": "^1.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/puppeteer": "^5.4.7",
+    "puppeteer": "^23.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

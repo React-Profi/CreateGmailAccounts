@@ -6,15 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotController = void 0;
 const puppeteer_extra_1 = __importDefault(require("puppeteer-extra"));
 const puppeteer_extra_plugin_stealth_1 = __importDefault(require("puppeteer-extra-plugin-stealth"));
-const BrowserConfig_1 = __importDefault(require("../puppeteer-config/BrowserConfig"));
 puppeteer_extra_1.default.use((0, puppeteer_extra_plugin_stealth_1.default)());
 class BotController {
-    constructor(model, view) {
+    constructor(model, view, browserConfig) {
         this.browser = null;
         this.page = null;
         this.model = model;
         this.view = view;
-        this.browserConfig = new BrowserConfig_1.default();
+        this.browserConfig = browserConfig;
     }
     // Запуск браузера
     async launchBrowser() {
@@ -28,21 +27,18 @@ class BotController {
                 defaultViewport: config.defaultViewport,
             });
             this.page = await this.browser.newPage();
-            // Установка User-Agent
             await this.page.setUserAgent(config.userAgent);
             console.log(`User-Agent: ${config.userAgent}`);
             await this.page.setExtraHTTPHeaders({
                 "Accept-Language": config.lang,
             });
-            console.log(config.lang);
-            // Эмуляция языка на уровне браузера
             await this.page.evaluateOnNewDocument((lang) => {
+                Object.defineProperty(navigator, "language", { value: "ru-RU" });
                 lang = lang.replace(/^"(.*)"$/, "$1");
                 Object.defineProperty(navigator, "languages", {
                     get: () => [lang],
                 });
             }, config.lang);
-            // Эмуляция таймзоны
             await this.page.emulateTimezone("Europe/Moscow");
         }
         catch (error) {

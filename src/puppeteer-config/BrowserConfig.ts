@@ -1,25 +1,11 @@
-import DataLoader from "../services/DataLoader.js";
+import { IBrowserConfig } from "../interfaces/IBrowserConfig";
+import { IDataLoader } from "../interfaces/IDataLoader";
 
-export default class BrowserConfig {
-  private dataLoader: DataLoader;
-  constructor() {
-    this.dataLoader = new DataLoader();
-  }
+export default class BrowserConfig implements IBrowserConfig {
+  private dataLoader: IDataLoader;
 
-  getRandomUserAgent(): string {
-    const userAgents = this.dataLoader.loadUserAgents();
-    if (userAgents.length === 0) {
-      throw new Error("Список User-Agent пуст.");
-    }
-    return userAgents[Math.floor(Math.random() * userAgents.length)];
-  }
-
-  getRandomLanguage(): string {
-    const languages = this.dataLoader.loadLanguages();
-    if (languages.length === 0) {
-      throw new Error("Список языков пуст.");
-    }
-    return languages[Math.floor(Math.random() * languages.length)];
+  constructor(dataLoader: IDataLoader) {
+    this.dataLoader = dataLoader;
   }
 
   generateBrowserConfig(): {
@@ -29,8 +15,8 @@ export default class BrowserConfig {
     lang: string;
   } | null {
     try {
-      const userAgent = this.getRandomUserAgent();
-      const language = this.getRandomLanguage();
+      const userAgent = this.dataLoader.loadUserAgents()[0]; // Пример использования
+      const language = this.dataLoader.loadLanguages()[0];
       const width = Math.floor(Math.random() * (1920 - 1366)) + 1366;
       const height = Math.floor(Math.random() * (1080 - 768)) + 768;
 
@@ -48,3 +34,5 @@ export default class BrowserConfig {
     }
   }
 }
+
+export { BrowserConfig };

@@ -1,31 +1,14 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const DataLoader_js_1 = __importDefault(require("../services/DataLoader.js"));
+exports.BrowserConfig = void 0;
 class BrowserConfig {
-    constructor() {
-        this.dataLoader = new DataLoader_js_1.default();
-    }
-    getRandomUserAgent() {
-        const userAgents = this.dataLoader.loadUserAgents();
-        if (userAgents.length === 0) {
-            throw new Error("Список User-Agent пуст.");
-        }
-        return userAgents[Math.floor(Math.random() * userAgents.length)];
-    }
-    getRandomLanguage() {
-        const languages = this.dataLoader.loadLanguages();
-        if (languages.length === 0) {
-            throw new Error("Список языков пуст.");
-        }
-        return languages[Math.floor(Math.random() * languages.length)];
+    constructor(dataLoader) {
+        this.dataLoader = dataLoader;
     }
     generateBrowserConfig() {
         try {
-            const userAgent = this.getRandomUserAgent();
-            const language = this.getRandomLanguage();
+            const userAgent = this.dataLoader.loadUserAgents()[0]; // Пример использования
+            const language = this.dataLoader.loadLanguages()[0];
             const width = Math.floor(Math.random() * (1920 - 1366)) + 1366;
             const height = Math.floor(Math.random() * (1080 - 768)) + 768;
             return {
@@ -42,3 +25,4 @@ class BrowserConfig {
     }
 }
 exports.default = BrowserConfig;
+exports.BrowserConfig = BrowserConfig;

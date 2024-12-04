@@ -1,30 +1,29 @@
 import puppeteer from "puppeteer-extra";
 import type { Browser, Page } from "puppeteer";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
-import BrowserConfig from "../puppeteer-config/BrowserConfig";
-import { BotModel } from "../models/BotModel";
-import { BotView } from "../views/BotView.js";
+import { IBotModel } from "../interfaces/IBotModel";
+import { IBotView } from "../interfaces/IBotView";
+import { IBrowserConfig } from "../interfaces/IBrowserConfig";
 
 puppeteer.use(StealthPlugin());
 
 export default class BotController {
-  private model: BotModel;
-  private view: typeof BotView;
-  private browserConfig: BrowserConfig;
+  private model: IBotModel;
+  private view: IBotView;
+  private browserConfig: IBrowserConfig;
   private browser: Browser | null = null;
   private page: Page | null = null;
 
-  constructor(model: BotModel, view: typeof BotView) {
+  constructor(model: IBotModel, view: IBotView, browserConfig: IBrowserConfig) {
     this.model = model;
     this.view = view;
-    this.browserConfig = new BrowserConfig();
+    this.browserConfig = browserConfig;
   }
 
   // Запуск браузера
   async launchBrowser(): Promise<void> {
     try {
       const config = this.browserConfig.generateBrowserConfig();
-
       if (!config) throw new Error("Failed to generate browser config");
 
       this.browser = await puppeteer.launch({
@@ -32,25 +31,23 @@ export default class BotController {
         args: config.args,
         defaultViewport: config.defaultViewport,
       });
-      this.page = await this.browser.newPage();
 
-      // Установка User-Agent
+      this.page = await this.browser.newPage();
       await this.page.setUserAgent(config.userAgent);
       console.log(`User-Agent: ${config.userAgent}`);
 
       await this.page.setExtraHTTPHeaders({
         "Accept-Language": config.lang,
       });
-      console.log(config.lang);
-      // Эмуляция языка на уровне браузера
+
       await this.page.evaluateOnNewDocument((lang) => {
+        Object.defineProperty(navigator, "language", { value: "ru-RU" });
         lang = lang.replace(/^"(.*)"$/, "$1");
         Object.defineProperty(navigator, "languages", {
           get: () => [lang],
         });
       }, config.lang);
 
-      // Эмуляция таймзоны
       await this.page.emulateTimezone("Europe/Moscow");
     } catch (error) {
       this.view.error(`Ошибка запуска браузера: ${(error as Error).message}`);

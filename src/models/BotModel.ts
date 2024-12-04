@@ -1,6 +1,9 @@
-export default class BotModel {
+import { IBotModel } from "../interfaces/IBotModel";
+
+export default class BotModel implements IBotModel {
   private registrationUrl: string;
   private createAccountButtonSelector: string;
+
   constructor() {
     this.registrationUrl =
       "https://www.gmail.com/mail/help/intl/ru/about.html?de";
@@ -15,4 +18,5 @@ export default class BotModel {
     return this.createAccountButtonSelector;
   }
 }
+
 export { BotModel };

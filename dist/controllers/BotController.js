@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotController = void 0;
 const puppeteer_extra_1 = __importDefault(require("puppeteer-extra"));
 const puppeteer_extra_plugin_stealth_1 = __importDefault(require("puppeteer-extra-plugin-stealth"));
+const BotControllerError_1 = require("../exceptions/BotControllerError");
 puppeteer_extra_1.default.use((0, puppeteer_extra_plugin_stealth_1.default)());
 class BotController {
     constructor(model, view, browserConfig) {
@@ -19,8 +20,9 @@ class BotController {
     async launchBrowser() {
         try {
             const config = this.browserConfig.generateBrowserConfig();
-            if (!config)
-                throw new Error("Failed to generate browser config");
+            if (!config) {
+                throw new BotControllerError_1.BotControllerError("Не удалось сгенерировать конфигурацию браузера");
+            }
             this.browser = await puppeteer_extra_1.default.launch({
                 headless: false,
                 args: config.args,
@@ -42,36 +44,50 @@ class BotController {
             await this.page.emulateTimezone("Europe/Moscow");
         }
         catch (error) {
-            this.view.error(`Ошибка запуска браузера: ${error.message}`);
-            throw error;
+            throw new BotControllerError_1.BotControllerError("Ошибка при запуске браузера", error.message);
         }
     }
     // Навигация на страницу
     async navigateToUrl(url) {
-        if (!this.page)
-            throw new Error("Page is not initialized");
-        this.view.log(`Navigating to: ${url}`);
-        await this.page.goto(url, { waitUntil: "networkidle2" });
-        this.view.success(`Successfully navigated to the page.`);
+        try {
+            if (!this.page)
+                throw new BotControllerError_1.BotControllerError("Page не инициализирована для навигации");
+            this.view.log(`Навигация на: ${url}`);
+            await this.page.goto(url, { waitUntil: "networkidle2" });
+            this.view.success(`Успешно перешли на страницу.`);
+        }
+        catch (error) {
+            throw new BotControllerError_1.BotControllerError("Не удалось перейти по URL", error.message);
+        }
     }
     // Клик по кнопке
     async clickCreateAccountButton(selector) {
-        if (!this.page)
-            throw new Error("Page is not initialized");
-        await this.page.waitForSelector(selector, { timeout: 5000 });
-        await this.page.click(selector);
-        await this.delay(50 + Math.random() * 100);
-        const newUrl = this.page.url();
-        this.view.log(`Navigated to: ${newUrl}`);
+        try {
+            if (!this.page)
+                throw new BotControllerError_1.BotControllerError("Page не инициализирована для клика");
+            await this.page.waitForSelector(selector, { timeout: 5000 });
+            await this.page.click(selector);
+            await this.delay(50 + Math.random() * 100);
+            const newUrl = this.page.url();
+            this.view.log(`Перешли на: ${newUrl}`);
+        }
+        catch (error) {
+            throw new BotControllerError_1.BotControllerError("Не удалось кликнуть по кнопке создания аккаунта", error.message);
+        }
     }
     // Ввод текста
     async typeText(selector, text) {
-        if (!this.page)
-            throw new Error("Page is not initialized");
-        await this.page.waitForSelector(selector);
-        for (const char of text) {
-            await this.page.type(selector, char);
-            await this.delay(50 + Math.random() * 100);
+        try {
+            if (!this.page)
+                throw new BotControllerError_1.BotControllerError("Page не инициализирована для ввода текста");
+            await this.page.waitForSelector(selector);
+            for (const char of text) {
+                await this.page.type(selector, char);
+                await this.delay(50 + Math.random() * 100);
+            }
+        }
+        catch (error) {
+            throw new BotControllerError_1.BotControllerError(`Не удалось ввести текст в селектор: ${selector}`, error.message);
         }
     }
     // Закрытие браузера
@@ -90,7 +106,7 @@ class BotController {
             await this.clickCreateAccountButton(buttonSelector);
         }
         catch (error) {
-            this.view.error(`An error occurred: ${error.message}`);
+            this.view.error(`Произошла ошибка: ${error.message}`);
         }
         finally {
             await this.closeBrowser();
@@ -104,7 +120,7 @@ class BotController {
             await this.navigateToUrl(url);
         }
         catch (error) {
-            this.view.error(`An error occurred: ${error.message}`);
+            this.view.error(`Произошла ошибка: ${error.message}`);
         }
     }
     // Задержка (в миллисекундах)

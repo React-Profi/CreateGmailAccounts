@@ -1,6 +1,7 @@
 import { IDataLoader } from "../interfaces/IDataLoader";
 import fs from "fs";
 import path from "path";
+import { DataLoaderError } from "../exceptions/DataLoaderError";
 
 const configPath = path.resolve("config/config.json");
 const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
@@ -22,8 +23,10 @@ export default class DataLoader implements IDataLoader {
         .map((line) => line.trim())
         .filter((line) => line !== "");
     } catch (error) {
-      console.error(`Ошибка загрузки User-Agent: ${(error as Error).message}`);
-      return [];
+      throw new DataLoaderError(
+        `Ошибка загрузки файла User-Agent: ${this.userAgentsPath}`,
+        (error as Error).message
+      );
     }
   }
 
@@ -35,8 +38,10 @@ export default class DataLoader implements IDataLoader {
         .map((line) => line.trim())
         .filter((line) => line !== "");
     } catch (error) {
-      console.error(`Ошибка загрузки языков: ${(error as Error).message}`);
-      return [];
+      throw new DataLoaderError(
+        `Ошибка загрузки файла языков: ${this.languagesPath}`,
+        (error as Error).message
+      );
     }
   }
 }

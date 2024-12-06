@@ -1,10 +1,16 @@
 import { IBrowserConfig } from "../interfaces/IBrowserConfig";
 import { IDataLoader } from "../interfaces/IDataLoader";
+import { BrowserConfigError } from "../exceptions/BrowserConfigError";
 
 export default class BrowserConfig implements IBrowserConfig {
   private dataLoader: IDataLoader;
 
   constructor(dataLoader: IDataLoader) {
+    if (!dataLoader) {
+      throw new BrowserConfigError(
+        "Отсутствует объект загрузчика данных (IDataLoader)."
+      );
+    }
     this.dataLoader = dataLoader;
   }
 
@@ -15,8 +21,20 @@ export default class BrowserConfig implements IBrowserConfig {
     lang: string;
   } | null {
     try {
-      const userAgent = this.dataLoader.loadUserAgents()[0]; // Пример использования
-      const language = this.dataLoader.loadLanguages()[0];
+      const userAgents = this.dataLoader.loadUserAgents();
+      const languages = this.dataLoader.loadLanguages();
+
+      if (!userAgents || userAgents.length === 0) {
+        throw new BrowserConfigError("Список User-Agent не загружен или пуст.");
+      }
+
+      if (!languages || languages.length === 0) {
+        throw new BrowserConfigError("Список языков не загружен или пуст.");
+      }
+      const userAgent =
+        userAgents[Math.floor(Math.random() * userAgents.length)];
+      const language = languages[Math.floor(Math.random() * languages.length)];
+
       const width = Math.floor(Math.random() * (1920 - 1366)) + 1366;
       const height = Math.floor(Math.random() * (1080 - 768)) + 768;
 
@@ -27,10 +45,10 @@ export default class BrowserConfig implements IBrowserConfig {
         lang: language,
       };
     } catch (error) {
-      console.error(
-        `Ошибка генерации конфигурации: ${(error as Error).message}`
+      throw new BrowserConfigError(
+        "Ошибка генерации конфигурации браузера.",
+        (error as Error).message
       );
-      return null;
     }
   }
 }

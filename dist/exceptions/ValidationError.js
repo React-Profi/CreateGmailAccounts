@@ -1,11 +1,13 @@
-import { BaseCustomError } from "./BaseCustomError";
-
-export class ValidationError extends BaseCustomError {
-  constructor(message: string) {
-    super(message, "ValidationError");
-  }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ValidationError = void 0;
+const BaseCustomError_1 = require("./BaseCustomError");
+class ValidationError extends BaseCustomError_1.BaseCustomError {
+    constructor(message) {
+        super(message, "ValidationError");
+    }
 }
-
+exports.ValidationError = ValidationError;
 /*
 Этот класс используется для обработки ошибок валидации, например, проверки входных данных или результатов выполнения методов.
 

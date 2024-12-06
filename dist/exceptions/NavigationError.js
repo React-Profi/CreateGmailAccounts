@@ -1,12 +1,15 @@
-import { BaseCustomError } from "./BaseCustomError";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NavigationError = void 0;
+const BaseCustomError_1 = require("./BaseCustomError");
 //Ошибка навигации
-export class NavigationError extends BaseCustomError {
-  constructor(message: string, url?: string) {
-    const detailedMessage = url ? `${message} (URL: ${url})` : message;
-    super(detailedMessage, "NavigationError");
-  }
+class NavigationError extends BaseCustomError_1.BaseCustomError {
+    constructor(message, url) {
+        const detailedMessage = url ? `${message} (URL: ${url})` : message;
+        super(detailedMessage, "NavigationError");
+    }
 }
-
+exports.NavigationError = NavigationError;
 /*
 Ошибка навигации возникает, если бот не может корректно перейти на заданный URL или загрузка страницы завершилась с ошибкой.
 Например, если сервер вернул статус 404 или бот застрял на стадии загрузки.

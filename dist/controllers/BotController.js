@@ -21,50 +21,83 @@ class BotController {
         try {
             const config = this.browserConfig.generateBrowserConfig();
             if (!config) {
-                throw new BotControllerError_1.BotControllerError("Не удалось сгенерировать конфигурацию браузера");
+                throw new BotControllerError_1.BotControllerError('Не удалось сгенерировать конфигурацию браузера');
             }
             this.browser = await puppeteer_extra_1.default.launch({
                 headless: false,
                 args: config.args,
-                defaultViewport: config.defaultViewport,
+                defaultViewport: config.defaultViewport
             });
+            console.log(`User: ${config.args}`);
             this.page = await this.browser.newPage();
             await this.page.setUserAgent(config.userAgent);
             console.log(`User-Agent: ${config.userAgent}`);
             await this.page.setExtraHTTPHeaders({
-                "Accept-Language": config.lang,
+                'Accept-Language': config.lang
             });
-            await this.page.evaluateOnNewDocument((lang) => {
-                Object.defineProperty(navigator, "language", { value: "ru-RU" });
-                lang = lang.replace(/^"(.*)"$/, "$1");
-                Object.defineProperty(navigator, "languages", {
-                    get: () => [lang],
-                });
-            }, config.lang);
-            await this.page.emulateTimezone("Europe/Moscow");
+            /*
+      await this.page.setExtraHTTPHeaders({
+        "Accept-Language": "ru-RU,ru;q=0.9",
+      });*/
+            /*
+      await this.page.evaluateOnNewDocument((lang) => {
+        console.log(`Setting navigator.language to ${lang}`);
+        Object.defineProperty(navigator, "language", {
+          value: "ru-RU",
+          configurable: true,
+        });
+        lang = lang.replace(/^"(.*)"$/, "$1");
+        Object.defineProperty(navigator, "languages", {
+          get: () => [lang],
+          configurable: true,
+        });
+      }, config.lang);
+*/
+            await this.page.evaluateOnNewDocument(() => {
+                const defineProperty = (obj, key, value) => {
+                    Object.defineProperty(obj, key, {
+                        get: () => value,
+                        configurable: true
+                    });
+                };
+                defineProperty(navigator, 'language', 'ru-RU');
+                defineProperty(navigator, 'languages', ['ru-RU', 'ru']);
+            });
+            await this.page.setExtraHTTPHeaders({
+                'Accept-Language': 'ru-RU,ru;q=0.9'
+            });
+            await this.page.emulateTimezone('Europe/Moscow');
+            // Проверка navigator перед переходом на страницу
+            const headers = await this.page.evaluate(() => ({
+                language: navigator.language,
+                languages: navigator.languages,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform
+            }));
+            console.log('Navigator properties:', headers);
         }
         catch (error) {
-            throw new BotControllerError_1.BotControllerError("Ошибка при запуске браузера", error.message);
+            throw new BotControllerError_1.BotControllerError('Ошибка при запуске браузера', error.message);
         }
     }
     // Навигация на страницу
     async navigateToUrl(url) {
         try {
             if (!this.page)
-                throw new BotControllerError_1.BotControllerError("Page не инициализирована для навигации");
+                throw new BotControllerError_1.BotControllerError('Page не инициализирована для навигации');
             this.view.log(`Навигация на: ${url}`);
-            await this.page.goto(url, { waitUntil: "networkidle2" });
+            await this.page.goto(url, { waitUntil: 'networkidle2' });
             this.view.success(`Успешно перешли на страницу.`);
         }
         catch (error) {
-            throw new BotControllerError_1.BotControllerError("Не удалось перейти по URL", error.message);
+            throw new BotControllerError_1.BotControllerError('Не удалось перейти по URL', error.message);
         }
     }
     // Клик по кнопке
     async clickCreateAccountButton(selector) {
         try {
             if (!this.page)
-                throw new BotControllerError_1.BotControllerError("Page не инициализирована для клика");
+                throw new BotControllerError_1.BotControllerError('Page не инициализирована для клика');
             await this.page.waitForSelector(selector, { timeout: 5000 });
             await this.page.click(selector);
             await this.delay(50 + Math.random() * 100);
@@ -72,14 +105,14 @@ class BotController {
             this.view.log(`Перешли на: ${newUrl}`);
         }
         catch (error) {
-            throw new BotControllerError_1.BotControllerError("Не удалось кликнуть по кнопке создания аккаунта", error.message);
+            throw new BotControllerError_1.BotControllerError('Не удалось кликнуть по кнопке создания аккаунта', error.message);
         }
     }
     // Ввод текста
     async typeText(selector, text) {
         try {
             if (!this.page)
-                throw new BotControllerError_1.BotControllerError("Page не инициализирована для ввода текста");
+                throw new BotControllerError_1.BotControllerError('Page не инициализирована для ввода текста');
             await this.page.waitForSelector(selector);
             for (const char of text) {
                 await this.page.type(selector, char);
@@ -90,13 +123,11 @@ class BotController {
             throw new BotControllerError_1.BotControllerError(`Не удалось ввести текст в селектор: ${selector}`, error.message);
         }
     }
-    // Закрытие браузера
     async closeBrowser() {
         if (this.browser) {
             await this.browser.close();
         }
     }
-    // Основной запуск
     async run() {
         const url = this.model.getRegistrationUrl();
         const buttonSelector = this.model.getCreateAccountButtonSelector();
@@ -107,6 +138,7 @@ class BotController {
         }
         catch (error) {
             this.view.error(`Произошла ошибка: ${error.message}`);
+            throw new BotControllerError_1.BotControllerError(`Произошла ошибка`, error.message);
         }
         finally {
             await this.closeBrowser();
@@ -114,18 +146,20 @@ class BotController {
     }
     // Тестирование с бот-сайтом
     async runDetectTest() {
-        const url = "https://bot.sannysoft.com/";
+        const url = 'https://bot.sannysoft.com/';
+        //const url = "https://amiunique.org/fingerprint";
         try {
             await this.launchBrowser();
             await this.navigateToUrl(url);
         }
         catch (error) {
             this.view.error(`Произошла ошибка: ${error.message}`);
+            throw new BotControllerError_1.BotControllerError(`Произошла ошибка`, error.message);
         }
     }
     // Задержка (в миллисекундах)
     delay(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 exports.default = BotController;

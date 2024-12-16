@@ -8,7 +8,7 @@ class BotControllerError extends BaseCustomError_1.BaseCustomError {
   !----------------------------------------------------------------------------------!
   !\t\tИсключение упало в классе BotController.                             !
   !${message}
-  !${throwSystemMessage}
+  !${throwSystemMessage ? `Системное сообщение: ${throwSystemMessage}` : ""}
   !----------------------------------------------------------------------------------!
       `);
     }

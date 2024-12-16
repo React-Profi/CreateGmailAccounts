@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataLoader = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const DataLoaderError_1 = require("../exceptions/DataLoaderError");
 const configPath = path_1.default.resolve("config/config.json");
 const config = JSON.parse(fs_1.default.readFileSync(configPath, "utf-8"));
 class DataLoader {
@@ -22,8 +23,7 @@ class DataLoader {
                 .filter((line) => line !== "");
         }
         catch (error) {
-            console.error(`Ошибка загрузки User-Agent: ${error.message}`);
-            return [];
+            throw new DataLoaderError_1.DataLoaderError(`Ошибка загрузки файла User-Agent: ${this.userAgentsPath}`, error.message);
         }
     }
     loadLanguages() {
@@ -35,8 +35,7 @@ class DataLoader {
                 .filter((line) => line !== "");
         }
         catch (error) {
-            console.error(`Ошибка загрузки языков: ${error.message}`);
-            return [];
+            throw new DataLoaderError_1.DataLoaderError(`Ошибка загрузки файла языков: ${this.languagesPath}`, error.message);
         }
     }
 }

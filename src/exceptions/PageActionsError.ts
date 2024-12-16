@@ -1,9 +1,9 @@
 import { BaseCustomError } from './BaseCustomError';
 
-export class DataLoaderError extends BaseCustomError {
+export class PageActionsError extends BaseCustomError {
 	constructor(message: string, throwSystemMessage: string = '') {
 		super(
-			BaseCustomError.formatMessage('BotView', message, throwSystemMessage)
+			BaseCustomError.formatMessage('PageActions', message, throwSystemMessage)
 		);
 	}
 }

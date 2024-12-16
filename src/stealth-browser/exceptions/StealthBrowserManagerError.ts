@@ -1,10 +1,10 @@
 import { BaseCustomError } from './BaseCustomError';
 
-export class BotControllerError extends BaseCustomError {
+export class StealthBrowserManagerError extends BaseCustomError {
 	constructor(message: string, throwSystemMessage: string = '') {
 		super(
 			BaseCustomError.formatMessage(
-				'BotController',
+				'StealthBrowserManager',
 				message,
 				throwSystemMessage
 			)

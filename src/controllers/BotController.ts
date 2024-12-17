@@ -1,17 +1,20 @@
 import { PageActions } from '../actions/PageActions';
-import { BotControllerError } from '../exceptions/BotControllerError';
-import { IBotModel } from '../interfaces/IBotModel';
-import { IBotView } from '../interfaces/IBotView';
+import { GmailRegistrationControllerError } from '../exceptions/GmailRegistrationControllerError';
+import { IGmailRegistrationController } from '../interfaces/IGmailRegistrationController';
+import { IGmailRegistrationModel } from '../interfaces/IGmailRegistrationModel';
+import { IGmailRegistrationView } from '../interfaces/IGmailRegistrationView';
 import { StealthBrowserManager } from '../stealth-browser/StealthBrowserManager';
 
-class BotController {
-	private model: IBotModel;
-	private view: IBotView;
+export class GmailRegistrationController
+	implements IGmailRegistrationController
+{
+	private model: IGmailRegistrationModel;
+	private view: IGmailRegistrationView;
 	private browserManager: StealthBrowserManager;
 
 	constructor(
-		model: IBotModel,
-		view: IBotView,
+		model: IGmailRegistrationModel,
+		view: IGmailRegistrationView,
 		browserManager: StealthBrowserManager
 	) {
 		this.model = model;
@@ -21,6 +24,10 @@ class BotController {
 
 	// Основной процесс регистрации
 	async run(): Promise<void> {
+		if (true) {
+			this.runDetectTest();
+			return;
+		}
 		try {
 			const url = this.model.getRegistrationUrl();
 			const buttonSelector = this.model.getCreateAccountButtonSelector();
@@ -32,7 +39,7 @@ class BotController {
 			await actions.click(buttonSelector);
 			this.view.success(`Регистрация начата успешно.`);
 		} catch (error) {
-			throw new BotControllerError(
+			throw new GmailRegistrationControllerError(
 				'Ошибка во время процесса регистрации',
 				(error as Error).message
 			);
@@ -44,6 +51,7 @@ class BotController {
 	// Тест на детектирование
 	async runDetectTest(): Promise<void> {
 		const url = 'https://bot.sannysoft.com/';
+		//const url = "https://amiunique.org/fingerprint";
 
 		try {
 			const page = await this.browserManager.launch();
@@ -52,7 +60,7 @@ class BotController {
 			await actions.navigate(url);
 			this.view.success(`Успешно перешли на страницу теста: ${url}`);
 		} catch (error) {
-			throw new BotControllerError(
+			throw new GmailRegistrationControllerError(
 				'Ошибка во время выполнения теста на детектирование',
 				(error as Error).message
 			);
@@ -61,5 +69,3 @@ class BotController {
 		}
 	}
 }
-
-export { BotController };

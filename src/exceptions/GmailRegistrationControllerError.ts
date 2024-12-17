@@ -1,10 +1,10 @@
 import { BaseCustomError } from './BaseCustomError';
 
-export class BotControllerError extends BaseCustomError {
+export class GmailRegistrationControllerError extends BaseCustomError {
 	constructor(message: string, throwSystemMessage: string = '') {
 		super(
 			BaseCustomError.formatMessage(
-				'BotController',
+				'GmailRegistrationController',
 				message,
 				throwSystemMessage
 			)

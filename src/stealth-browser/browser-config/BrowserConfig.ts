@@ -2,7 +2,7 @@ import { BrowserConfigError } from '../exceptions/BrowserConfigError';
 import { IBrowserConfig } from '../interfaces/IBrowserConfig';
 import { IDataLoader } from '../interfaces/IDataLoader';
 
-export default class BrowserConfig implements IBrowserConfig {
+export class BrowserConfig implements IBrowserConfig {
 	private dataLoader: IDataLoader;
 
 	constructor(dataLoader: IDataLoader) {
@@ -52,5 +52,3 @@ export default class BrowserConfig implements IBrowserConfig {
 		}
 	}
 }
-
-export { BrowserConfig };

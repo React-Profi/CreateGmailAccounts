@@ -6,7 +6,7 @@ import { IDataLoader } from '../interfaces/IDataLoader';
 const configPath = path.resolve('config/config.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
-export default class DataLoader implements IDataLoader {
+export class DataLoader implements IDataLoader {
 	private userAgentsPath: string;
 	private languagesPath: string;
 
@@ -45,5 +45,3 @@ export default class DataLoader implements IDataLoader {
 		}
 	}
 }
-
-export { DataLoader };

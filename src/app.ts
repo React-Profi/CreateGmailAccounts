@@ -1,20 +1,25 @@
-import { BotController } from './controllers/BotController';
-import { BotModel } from './models/BotModel';
-import { BrowserConfig } from './stealth-browser/puppeteer-config/BrowserConfig';
+import { GmailRegistrationController } from './controllers/BotController';
+import { IGmailRegistrationController } from './interfaces/IGmailRegistrationController';
+import { IGmailRegistrationModel } from './interfaces/IGmailRegistrationModel';
+import { IGmailRegistrationView } from './interfaces/IGmailRegistrationView';
+import { GmailRegistrationModel } from './models/GmailRegistrationModel';
+import { BrowserConfig } from './stealth-browser/browser-config/BrowserConfig';
+import { IBrowserConfig } from './stealth-browser/interfaces/IBrowserConfig';
+import { IDataLoader } from './stealth-browser/interfaces/IDataLoader';
 import { DataLoader } from './stealth-browser/services/DataLoader';
 import { StealthBrowserManager } from './stealth-browser/StealthBrowserManager';
-import { BotView } from './views/BotView';
+import { GmailRegistrationView } from './views/GmailRegistrationView';
 
 // Инициализация MVC компонентов
-const model = new BotModel();
-const view = new BotView();
-const dataLoader = new DataLoader();
-const browserConfig = new BrowserConfig(dataLoader);
+const model: IGmailRegistrationModel = new GmailRegistrationModel();
+const view: IGmailRegistrationView = new GmailRegistrationView();
+const dataLoader: IDataLoader = new DataLoader();
+const browserConfig: IBrowserConfig = new BrowserConfig(dataLoader);
 const browserManager = new StealthBrowserManager(browserConfig);
-const controller = new BotController(model, view, browserManager);
+
+const controller: IGmailRegistrationController =
+	new GmailRegistrationController(model, view, browserManager);
 
 console.log('Запуск');
 
-//controller.run();
-
-controller.runDetectTest();
+controller.run();

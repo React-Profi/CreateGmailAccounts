@@ -39,5 +39,4 @@ class DataLoader {
         }
     }
 }
-exports.default = DataLoader;
 exports.DataLoader = DataLoader;

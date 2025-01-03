@@ -1,11 +1,11 @@
 {
-  "userAgentsPath": "src/data/user-agents.txt",
-  "languagesPath": "src/data/lang.txt",
-  "browserOptions": {
-    "headless": false,
-    "defaultViewport": {
-      "width": 1366,
-      "height": 768
-    }
-  }
+	"userAgentsPath": "src/stealth-browser/data/user-agents.txt",
+	"languagesPath": "src/stealth-browser/data/lang.txt",
+	"browserOptions": {
+		"headless": false,
+		"defaultViewport": {
+			"width": 1366,
+			"height": 768
+		}
+	}
 }

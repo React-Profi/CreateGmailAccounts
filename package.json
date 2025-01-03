@@ -10,10 +10,7 @@
   "author": "Д.Б. Александрович",
   "license": "ISC",
   "dependencies": {
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-anonymize-ua": "^2.4.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "puppeteer-extra-plugin-timezone": "^1.0.5"
+    "puppeteer-extra": "^3.3.6"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

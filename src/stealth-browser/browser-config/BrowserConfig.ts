@@ -1,5 +1,6 @@
 import { BrowserConfigError } from '../exceptions/BrowserConfigError';
 import { IBrowserConfig } from '../interfaces/IBrowserConfig';
+import { IBrowserConfigResult } from '../interfaces/IBrowserConfigResult';
 import { IDataLoader } from '../interfaces/IDataLoader';
 
 export class BrowserConfig implements IBrowserConfig {
@@ -14,12 +15,7 @@ export class BrowserConfig implements IBrowserConfig {
 		this.dataLoader = dataLoader;
 	}
 
-	generateBrowserConfig(): {
-		args: string[];
-		defaultViewport: { width: number; height: number } | null;
-		userAgent: string;
-		lang: string;
-	} | null {
+	generateBrowserConfig(): IBrowserConfigResult | null {
 		try {
 			const userAgents = this.dataLoader.loadUserAgents();
 			const languages = this.dataLoader.loadLanguages();

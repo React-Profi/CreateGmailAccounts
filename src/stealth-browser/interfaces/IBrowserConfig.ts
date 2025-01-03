@@ -1,8 +1,14 @@
+import { IBrowserConfigResult } from './IBrowserConfigResult';
+
+/**
+ * Интерфейс для класса конфигурации браузера.
+ */
 export interface IBrowserConfig {
-  generateBrowserConfig(): {
-    args: string[];
-    defaultViewport: { width: number; height: number } | null;
-    userAgent: string;
-    lang: string;
-  } | null;
+	/**
+	 * Генерирует конфигурацию для запуска браузера.
+	 *
+	 * @returns Объект конфигурации браузера или `null`, если конфигурация не может быть сгенерирована.
+
+	 */
+	generateBrowserConfig(): IBrowserConfigResult | null;
 }

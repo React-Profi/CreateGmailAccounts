@@ -1,31 +1,26 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const DataLoader_js_1 = __importDefault(require("../services/DataLoader.js"));
+exports.BrowserConfig = void 0;
+const BrowserConfigError_1 = require("../exceptions/BrowserConfigError");
 class BrowserConfig {
-    constructor() {
-        this.dataLoader = new DataLoader_js_1.default();
-    }
-    getRandomUserAgent() {
-        const userAgents = this.dataLoader.loadUserAgents();
-        if (userAgents.length === 0) {
-            throw new Error("Список User-Agent пуст.");
+    constructor(dataLoader) {
+        if (!dataLoader) {
+            throw new BrowserConfigError_1.BrowserConfigError("Отсутствует объект загрузчика данных (IDataLoader).");
         }
-        return userAgents[Math.floor(Math.random() * userAgents.length)];
-    }
-    getRandomLanguage() {
-        const languages = this.dataLoader.loadLanguages();
-        if (languages.length === 0) {
-            throw new Error("Список языков пуст.");
-        }
-        return languages[Math.floor(Math.random() * languages.length)];
+        this.dataLoader = dataLoader;
     }
     generateBrowserConfig() {
         try {
-            const userAgent = this.getRandomUserAgent();
-            const language = this.getRandomLanguage();
+            const userAgents = this.dataLoader.loadUserAgents();
+            const languages = this.dataLoader.loadLanguages();
+            if (!userAgents || userAgents.length === 0) {
+                throw new BrowserConfigError_1.BrowserConfigError("Список User-Agent не загружен или пуст.");
+            }
+            if (!languages || languages.length === 0) {
+                throw new BrowserConfigError_1.BrowserConfigError("Список языков не загружен или пуст.");
+            }
+            const userAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+            const language = languages[Math.floor(Math.random() * languages.length)];
             const width = Math.floor(Math.random() * (1920 - 1366)) + 1366;
             const height = Math.floor(Math.random() * (1080 - 768)) + 768;
             return {
@@ -36,9 +31,9 @@ class BrowserConfig {
             };
         }
         catch (error) {
-            console.error(`Ошибка генерации конфигурации: ${error.message}`);
-            return null;
+            throw new BrowserConfigError_1.BrowserConfigError("Ошибка генерации конфигурации браузера.", error.message);
         }
     }
 }
 exports.default = BrowserConfig;
+exports.BrowserConfig = BrowserConfig;
